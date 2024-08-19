@@ -11,6 +11,7 @@ const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup
 
 export async function middleware(request: ExtendedRequest) {
   const path = request.nextUrl.pathname;
+  console.log("middle ware called with path", path);
 
   if (publicPaths.includes(path)) {
     return NextResponse.next();
@@ -20,7 +21,7 @@ export async function middleware(request: ExtendedRequest) {
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/signin", request.nextUrl));
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
   if (path === "/api/auth/refreshToken" && refreshToken) {
@@ -32,7 +33,7 @@ export async function middleware(request: ExtendedRequest) {
 
   if (!jwtSecret) {
     console.error("JWT_SECRET is not set");
-    return NextResponse.redirect(new URL("/signin", request.nextUrl));
+    return NextResponse.redirect(new URL("/signin", request.url));
   }
 
   try {
@@ -42,9 +43,9 @@ export async function middleware(request: ExtendedRequest) {
   } catch (err) {
     console.error("Middleware error:", err);
     if (err instanceof JWTExpired && refreshToken) {
-      return NextResponse.redirect(new URL("/api/auth/refreshToken", request.nextUrl));
+      return NextResponse.redirect(new URL("/api/auth/refreshToken", request.url));
     } else {
-      return NextResponse.redirect(new URL("/signin", request.nextUrl));
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
   }
 }
