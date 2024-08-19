@@ -1,7 +1,6 @@
 
 <p align="center">
-  <img src="https://github.com/JaykumarPatel1998/ChessAgainstAI/public/BR.png" alt="Icon" width="50" height="50">
-  <img src="https://github.com/JaykumarPatel1998" alt="Icon" width="50" height="50">
+  <img src="https://github.com/JaykumarPatel1998/ChessAgainstAI/blob/main/public/BR.png" alt="Icon" width="50" height="50">
   <h3 align="center">React Rooks</h3>
 </p>
 
