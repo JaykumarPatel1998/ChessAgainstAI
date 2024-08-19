@@ -40,7 +40,7 @@ export const Footer = () => {
             width={30}
             className="dark:bg-white rounded-full"
           />
-          <Image src="/Mongodb.svg" alt="mongodb logo" height={30} width={30} />
+          <Image src="/MongoDB.svg" alt="mongodb logo" height={30} width={30} />
           <Image src="/Wasm.svg" alt="wasm logo" height={30} width={30} />
         </div>
       </footer>

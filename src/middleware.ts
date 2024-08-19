@@ -7,72 +7,52 @@ interface ExtendedRequest extends NextRequest {
   id?: string;
 }
 
+const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup", "/api/auth/signout", "/"];
+
 export async function middleware(request: ExtendedRequest) {
   const path = request.nextUrl.pathname;
 
-  const publicPath =
-    path === "/signin" ||
-    path === "/signup" ||
-    path === "/api/auth/signin" ||
-    path === "/api/auth/signup" ||
-    path === "/api/auth/signout" ||
-    path === "/";
-
-  const token = request.cookies.get("token")?.value || null;
-  const refreshToken = request.cookies.get("refreshToken")?.value || null;
-
-  if (publicPath) {
+  if (publicPaths.includes(path)) {
     return NextResponse.next();
   }
 
-  if (token && refreshToken && path === "/api/auth/refreshToken") {
-    return NextResponse.next();
-  }
+  const token = request.cookies.get("token")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  if (typeof token == "string") {
-    console.log("middleware");
-    const enc = new TextEncoder(); // always utf-8
-
-    try {
-      const decoded = await jwt.jwtVerify(
-        token,
-        enc.encode(process.env.JWT_SECRET!),
-        {
-          maxTokenAge: Number.parseInt(process.env.JWT_TOKEN_EXPIRY!),
-        }
-      );
-
-      if (decoded) {
-        request.id = decoded.payload.sub;
-        return NextResponse.next();
-      }
-    } catch (err) {
-      if (err) {
-        console.log("middleware error : ", err);
-        if (err instanceof JWTExpired) {
-          return NextResponse.redirect(
-            new URL("/api/auth/refreshToken", request.nextUrl)
-          );
-        } else {
-          return NextResponse.redirect(new URL("/signin", request.nextUrl));
-        }
-      }
-    }
-  } else {
+  if (!token) {
     return NextResponse.redirect(new URL("/signin", request.nextUrl));
+  }
+
+  if (path === "/api/auth/refreshToken" && refreshToken) {
+    return NextResponse.next();
+  }
+
+  const enc = new TextEncoder();
+  const jwtSecret = process.env.JWT_SECRET;
+
+  if (!jwtSecret) {
+    console.error("JWT_SECRET is not set");
+    return NextResponse.redirect(new URL("/signin", request.nextUrl));
+  }
+
+  try {
+    const decoded = await jwt.jwtVerify(token, enc.encode(jwtSecret));
+    request.id = decoded.payload.sub as string;
+    return NextResponse.next();
+  } catch (err) {
+    console.error("Middleware error:", err);
+    if (err instanceof JWTExpired && refreshToken) {
+      return NextResponse.redirect(new URL("/api/auth/refreshToken", request.nextUrl));
+    } else {
+      return NextResponse.redirect(new URL("/signin", request.nextUrl));
+    }
   }
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
-    "/",
-    "/api",
-    "/api/auth/:path",
-    "/api/chess",
-    "/signin",
-    "/signup",
-    "/Ai/:path",
+    "/api/:path*",
+    "/Ai/:path*",
     "/game",
     "/profile",
   ],
