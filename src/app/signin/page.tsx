@@ -20,7 +20,7 @@ function SignInPage() {
       const data = await response.json();
 
       if (data.success) {
-        // window.location.href = data.redirectUrl;
+        window.location.href = data.redirectUrl;
         console.log("data.redirectUrl",data.redirectUrl);
       } else {
         // Handle error (e.g., display error message)
