@@ -6,12 +6,6 @@ import jwt from 'jsonwebtoken';
 import { connect } from '@/dbConfig/dbConfig';
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-
-interface SignInDto {
-    username: string;
-    password: string;
-}
 
 connect()
 
@@ -35,26 +29,36 @@ export async function POST(req: NextRequest) {
             throw createHttpError(401, "Unauthorized: Incorrect password")
         }
 
+        const jwtExpiry = process.env.JWT_TOKEN_EXPIRY;
+        if (!jwtExpiry) {
+            throw new Error("JWT_TOKEN_EXPIRY is not set");
+        }
+
         const token = jwt.sign({ sub : user._id }, process.env.JWT_SECRET!, {
-            expiresIn: parseInt(process.env.JWT_TOKEN_EXPIRY!)
+            expiresIn: parseInt(jwtExpiry)
         });
 
         const refreshTokenToSend = await (RefreshToken as RefreshTokenType).createToken({_id : user._id})
 
-        cookies().set('token', token, {
-            httpOnly:true,
-            sameSite: 'lax'
-        })
+        const cookieOptions = {
+            httpOnly: true,
+            sameSite: 'lax' as const,
+            path: '/', // Set path to root to be accessible everywhere
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+        };
 
-        cookies().set('refreshToken', refreshTokenToSend, {
-            httpOnly:true,
-            sameSite: 'lax'
-        })
+        const response = NextResponse.redirect(new URL('/', req.url));
 
-        return NextResponse.redirect(new URL('/', req.url))
+        response.cookies.set('token', token, cookieOptions);
+        response.cookies.set('refreshToken', refreshTokenToSend, cookieOptions);
+
+        return response;
 
     } catch (error) {
-        console.log(error)
-        throw createHttpError(500, "Internal Server Error")
+        console.error(error);
+        if (error instanceof createHttpError.HttpError) {
+            return NextResponse.json({ error: error.message }, { status: error.status });
+        }
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
