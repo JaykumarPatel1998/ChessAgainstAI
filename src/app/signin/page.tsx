@@ -5,9 +5,11 @@ import { Card } from '@/components/ui/card'
 function SignInPage() {
   const handleSubmit = async (event : any) => {
     event.preventDefault();
-    console.log("handle",event.target);
+    console.log("event",event);
+    
     const form = event.target;
     const formData = new FormData(form);
+    console.log("formData",formData);
 
     try {
       const response = await fetch('/api/auth/signin', {
@@ -18,7 +20,8 @@ function SignInPage() {
       const data = await response.json();
 
       if (data.success) {
-        window.location.href = data.redirectUrl;
+        // window.location.href = data.redirectUrl;
+        console.log("data.redirectUrl",data.redirectUrl);
       } else {
         // Handle error (e.g., display error message)
         console.error('Login failed:', data.error);
@@ -34,23 +37,21 @@ function SignInPage() {
 
         <input
           className="hidden"
+          type="text"
           name="username"
           placeholder="username"
-          value={process.env.GUEST_USERNAME}
-          readOnly={true}
+          value={"guest@rtg3"}
         />
         <input
           className="hidden"
           type="password"
           name="password"
           placeholder="••••••••"
-          value={process.env.GUEST_PASSWORD}
-          readOnly={true}
+          value={"123456"}
         />
         <Button
           type='submit'
           variant={"default"}
-          onSubmit={handleSubmit}
         >
           Quick Play as Guest
         </Button>
@@ -86,7 +87,6 @@ function SignInPage() {
         <Button
           type='submit'
           variant={"default"}
-          onSubmit={handleSubmit}
         >
           Sign In
         </Button>

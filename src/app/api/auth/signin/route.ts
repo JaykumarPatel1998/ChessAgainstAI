@@ -41,8 +41,7 @@ export async function POST(req: NextRequest) {
 
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Use secure in production
-            sameSite: 'lax' as const,
+            sameSite: 'lax' as const, // SameSite is set to 'lax' to allow cross-site requests
             path: '/', // Set path to root to be accessible everywhere
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         };
