@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import * as jwt from "jose";
-import { JWTExpired } from "jose/errors";
 
 interface ExtendedRequest extends NextRequest {
   id?: string;
@@ -11,7 +10,6 @@ const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup
 
 export async function middleware(request: ExtendedRequest) {
   const path = request.nextUrl.pathname;
-  console.log("middle ware called with path", path);
 
   if (publicPaths.includes(path)) {
     return NextResponse.next();
@@ -42,7 +40,7 @@ export async function middleware(request: ExtendedRequest) {
     return NextResponse.next();
   } catch (err) {
     console.error("Middleware error:", err);
-    if (err instanceof JWTExpired && refreshToken) {
+    if (err instanceof jwt.errors.JWTExpired && refreshToken) {
       return NextResponse.redirect(new URL("/api/auth/refreshToken", request.url));
     } else {
       return NextResponse.redirect(new URL("/signin", request.url));
@@ -53,8 +51,8 @@ export async function middleware(request: ExtendedRequest) {
 export const config = {
   matcher: [
     "/api/:path*",
-    "/Ai/:path*",
-    "/game",
     "/profile",
+    "/game",
+    "/Ai/:path*",
   ],
 };

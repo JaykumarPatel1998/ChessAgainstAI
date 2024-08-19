@@ -1,17 +1,43 @@
+"use client"
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 
 function SignInPage() {
+  const handleSubmit = async (event : any) => {
+    event.preventDefault();
+    console.log("handle",event.target);
+    const form = event.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.redirectUrl;
+      } else {
+        // Handle error (e.g., display error message)
+        console.error('Login failed:', data.error);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   return (
     <Card className="relative flex flex-col w-full p-8 sm:max-w-md justify-center gap-2">
-      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground" action="/api/auth/signin" method="post">
-       
+      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground" onSubmit={handleSubmit} method="post">
+
         <input
           className="hidden"
           name="username"
           placeholder="username"
           value={process.env.GUEST_USERNAME}
-          required
+          readOnly={true}
         />
         <input
           className="hidden"
@@ -19,23 +45,24 @@ function SignInPage() {
           name="password"
           placeholder="••••••••"
           value={process.env.GUEST_PASSWORD}
-          required
+          readOnly={true}
         />
         <Button
-        type='submit'
-        variant={"default"}
-      >
-        Quick Play as Guest
-      </Button>
+          type='submit'
+          variant={"default"}
+          onSubmit={handleSubmit}
+        >
+          Quick Play as Guest
+        </Button>
 
       </form>
 
-      
 
-    <span className='text-center '>or enter your credentials</span>
+
+      <span className='text-center '>or enter your credentials</span>
       <hr />
 
-      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground" action="/api/auth/signin" method="post">
+      <form className="flex-1 flex flex-col w-full justify-center gap-2 text-foreground" onSubmit={handleSubmit} method="post">
         <label className="text-md" htmlFor="username">
           Username
         </label>
@@ -59,6 +86,7 @@ function SignInPage() {
         <Button
           type='submit'
           variant={"default"}
+          onSubmit={handleSubmit}
         >
           Sign In
         </Button>

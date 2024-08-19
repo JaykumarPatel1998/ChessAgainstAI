@@ -5,13 +5,12 @@ import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
 import { connect } from '@/dbConfig/dbConfig';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 connect()
 
 export async function POST(req: NextRequest) {
     const data = await req.formData();
-    const username  = data.get('username')
+    const username = data.get('username')
     const password = data.get('password')
 
     try {
@@ -42,12 +41,16 @@ export async function POST(req: NextRequest) {
 
         const cookieOptions = {
             httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Use secure in production
             sameSite: 'lax' as const,
             path: '/', // Set path to root to be accessible everywhere
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         };
 
-        const response = NextResponse.redirect(new URL('/', req.url));
+        const response = NextResponse.json(
+            { success: true, redirectUrl: '/' },
+            { status: 200 }
+        );
 
         response.cookies.set('token', token, cookieOptions);
         response.cookies.set('refreshToken', refreshTokenToSend, cookieOptions);
@@ -56,9 +59,9 @@ export async function POST(req: NextRequest) {
 
     } catch (error) {
         console.error(error);
-        if (error instanceof createHttpError.HttpError) {
-            return NextResponse.json({ error: error.message }, { status: error.status });
-        }
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        // Instead of JSON response, redirect to signin page with error
+        const errorUrl = new URL('/signin', req.url);
+        errorUrl.searchParams.set('error', error instanceof createHttpError.HttpError ? error.message : 'Internal Server Error');
+        return NextResponse.redirect(errorUrl);
     }
 }
