@@ -51,11 +51,10 @@ export async function POST(req: NextRequest) {
             sameSite: 'lax'
         })
 
-        // return NextResponse.redirect(new URL('/', req.url))
+        return NextResponse.redirect(new URL('/', req.url))
 
     } catch (error) {
         console.log(error)
         throw createHttpError(500, "Internal Server Error")
     }
-    redirect("/")
 }
