@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import ShineBorder from "@/components/magicui/shine-border";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,16 +14,11 @@ import {
   BrainCircuitIcon,
   Clock,
   RocketIcon,
-  Star,
   UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-interface Stats {
-  usersCount: number;
-  gamesCount: number;
-}
 
 interface FeatureProps {
   icon: JSX.Element;
@@ -91,24 +85,24 @@ const FAQList: FAQProps[] = [
 ];
 
 export default function Home() {
-  const [stats, setStats] = useState<Stats | null>(null);
+  // const [stats, setStats] = useState<Stats | null>(null);
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch("/api/");
-        if (!response.ok) {
-          throw new Error("Failed to fetch stats");
-        }
-        const data: Stats = await response.json();
-        setStats(data);
-      } catch (error) {
-        console.error("Error fetching stats:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchStats = async () => {
+  //     try {
+  //       const response = await fetch("/api/");
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch stats");
+  //       }
+  //       const data: Stats = await response.json();
+  //       setStats(data);
+  //     } catch (error) {
+  //       console.error("Error fetching stats:", error);
+  //     }
+  //   };
 
-    fetchStats();
-  }, []);
+  //   fetchStats();
+  // }, []);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center sm:p-12 ">
@@ -134,7 +128,7 @@ export default function Home() {
               Play against <span className="font-bold">strongest</span> chess AI
               and get detailed analysis of your games
             </p>
-            <p>App Statistics</p>
+            {/* <p>App Statistics</p>
             <div className="flex flex-row justify-start space-x-4 mb-8">
               {stats && (
                 <>
@@ -156,7 +150,7 @@ export default function Home() {
                   </div>
                 </>
               )}
-            </div>
+            </div> */}
             <form action={"/api/chess"} method="POST">
               <Button
                 type="submit"

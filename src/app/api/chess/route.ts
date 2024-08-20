@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import ChessGameModel from '@/models/chessGame';
 import { cookies } from 'next/headers';
 import { decode } from 'jsonwebtoken';
+import { redirect } from 'next/dist/server/api-utils';
 
 connect()
 
@@ -28,7 +29,13 @@ export async function POST(req: ExtendedRequest) {
             })
 
             await newGameInstance.save();
-            return NextResponse.redirect(new URL(`/Ai/${newGameInstance._id}`, req.nextUrl))
+
+            const response = NextResponse.json(
+                { success: true, redirectUrl: `/Ai/${newGameInstance._id}` },
+                { status: 200 }
+            );
+
+            return response
         } else {
             return NextResponse.redirect(new URL('/signin', req.nextUrl))
         }

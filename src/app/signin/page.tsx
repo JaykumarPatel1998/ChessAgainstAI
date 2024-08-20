@@ -41,6 +41,7 @@ function SignInPage() {
           name="username"
           placeholder="username"
           value={"guest@rtg3"}
+          readOnly
         />
         <input
           className="hidden"
@@ -48,6 +49,7 @@ function SignInPage() {
           name="password"
           placeholder="••••••••"
           value={"123456"}
+          readOnly
         />
         <Button
           type='submit'

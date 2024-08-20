@@ -10,6 +10,7 @@ const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup
 
 export async function middleware(request: ExtendedRequest) {
   const path = request.nextUrl.pathname;
+  console.log("middleware called with path:", path);
 
   if (publicPaths.includes(path)) {
     return NextResponse.next();

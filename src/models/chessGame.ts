@@ -30,4 +30,3 @@ const chessGameSchema = new Schema({
   
 const ChessGameModel = mongoose.models.chessgames || model<InferSchemaType<typeof chessGameSchema>>("chessgames", chessGameSchema)
 export default ChessGameModel
-  
