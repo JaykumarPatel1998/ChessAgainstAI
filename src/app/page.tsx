@@ -104,6 +104,28 @@ export default function Home() {
   //   fetchStats();
   // }, []);
 
+  const handleSubmit = async (event : any) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch('/api/chess', {
+        method: 'POST'
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        window.location.href = data.redirectUrl;
+        console.log("data.redirectUrl",data.redirectUrl);
+      } else {
+        // Handle error (e.g., display error message)
+        console.error('Login failed:', data.error);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center sm:p-12 ">
       <ShineBorder
@@ -151,7 +173,7 @@ export default function Home() {
                 </>
               )}
             </div> */}
-            <form action={"/api/chess"} method="POST">
+            <form onClick={handleSubmit} method="POST">
               <Button
                 type="submit"
                 className="p-5 text-2xl font-mono font-bold text-background bg-[#779952] hover:bg-slate-500"
