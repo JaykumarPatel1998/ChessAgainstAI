@@ -28,8 +28,7 @@ React Rooks is a web-based chess game that allows users to play against an AI (S
 - **Authentication**: Secure user authentication for personalized experience.
 
 ## Tech Stack
-- **Frontend**: React.js, TypeScript, Tailwind CSS
-- **Backend**: Node.js, Next.js, MongoDB, WebSockets
+- **Full stack Framework**: Next, Typescript
 - **Deployment**: Vercel
 - **AI Integration**: Stockfish WASM (WebAssembly) that runs on client's browser
 - **Authentication**: JWT (JSON Web Tokens)
