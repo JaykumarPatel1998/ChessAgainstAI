@@ -31,7 +31,7 @@ export default function RootLayout({
             <Header />
             <div className="flex justify-center w-full items-center p-5">
               {children}
-              <Analytics />
+              {/* <Analytics /> */}
             </div>
             <Footer/>
 

@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import ThemeChangeToggle from "../ThemeChangeToggle";
-import { cookies } from "next/headers";
 import Image from "next/image";
+import { cookies } from "next/headers";
+
 
 export function Header() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
   const links = [
     {
       name: "React Rooks",
@@ -17,17 +20,10 @@ export function Header() {
       ),
     },
     {
-      name: "Profile",
-      href: "/profile",
-    },
-    {
       name: "Leaderboard",
       href: "/top-players",
     },
   ];
-
-  const cookieStore = cookies();
-  const token = cookieStore.get("token");
 
   return (
     <div className="sticky top-0 z-50 flex w-full flex-col">
@@ -46,6 +42,13 @@ export function Header() {
               </Link>
             );
           })}
+          {
+            token && (
+              <Link href={"/profile"} className="flex items-center gap-2">
+                <p>Profile</p>
+              </Link>
+            )
+          }
         </nav>
 
         {/* responsive mobile navigation */}
@@ -85,17 +88,22 @@ export function Header() {
           <ThemeChangeToggle />
 
           {/* implement auth button functionality here */}
+          
           {token ? (
-            <Link href={"/api/auth/signout"} className="flex items-center gap-2">
+            <form method="GET" action="/api/auth/signout">
+              <Button type="submit" className="flex items-center gap-2">
               <p>Sign Out</p>
               <LogOutIcon className="h-6 w-6" />
-            </Link>
-          ) : (
+            </Button>
+            </form>
+            
+            ) : (
             <Link href={"/signin"} className="flex items-center gap-2">
               <p>Sign In</p>
               <LogInIcon className="h-6 w-6" />
             </Link>
           )}
+          
         </div>
       </header>
     </div>

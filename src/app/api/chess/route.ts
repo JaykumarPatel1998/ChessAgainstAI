@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import ChessGameModel from '@/models/chessGame';
 import { cookies } from 'next/headers';
 import { decode } from 'jsonwebtoken';
-import { redirect } from 'next/dist/server/api-utils';
 
 connect()
 
@@ -15,7 +14,7 @@ interface ExtendedRequest extends NextRequest {
 export async function POST(req: ExtendedRequest) {
     const newGameFenString = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     const token = cookies().get('token')?.value || null
-    console.log(token)
+    console.log("Post called with token:", token)
 
     try {
 
@@ -34,10 +33,15 @@ export async function POST(req: ExtendedRequest) {
                 { success: true, redirectUrl: `/Ai/${newGameInstance._id}` },
                 { status: 200 }
             );
+            
 
             return response
         } else {
-            return NextResponse.redirect(new URL('/signin', req.nextUrl))
+            const response = NextResponse.json(
+                { success: true, redirectUrl: `/signin` },
+                { status: 200 }
+            );
+            return response
         }
 
     } catch (error) {

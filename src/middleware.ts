@@ -6,13 +6,14 @@ interface ExtendedRequest extends NextRequest {
   id?: string;
 }
 
-const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup", "/api/auth/signout", "/"];
+const publicPaths = ["/signin", "/signup", "/api/auth/signin", "/api/auth/signup", "/api/auth/signout"];
 
 export async function middleware(request: ExtendedRequest) {
   const path = request.nextUrl.pathname;
   console.log("middleware called with path:", path);
 
   if (publicPaths.includes(path)) {
+    console.log("public path");
     return NextResponse.next();
   }
 
@@ -20,6 +21,15 @@ export async function middleware(request: ExtendedRequest) {
   const refreshToken = request.cookies.get("refreshToken")?.value;
 
   if (!token) {
+    if (path === "/api/chess" && request.method === "POST") {
+      const response = NextResponse.json(
+        { success: true, redirectUrl: `/signin` },
+        { status: 200 }
+    );
+    
+
+    return response
+    }
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 

@@ -85,24 +85,6 @@ const FAQList: FAQProps[] = [
 ];
 
 export default function Home() {
-  // const [stats, setStats] = useState<Stats | null>(null);
-
-  // useEffect(() => {
-  //   const fetchStats = async () => {
-  //     try {
-  //       const response = await fetch("/api/");
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch stats");
-  //       }
-  //       const data: Stats = await response.json();
-  //       setStats(data);
-  //     } catch (error) {
-  //       console.error("Error fetching stats:", error);
-  //     }
-  //   };
-
-  //   fetchStats();
-  // }, []);
 
   const handleSubmit = async (event : any) => {
     event.preventDefault();
@@ -150,29 +132,7 @@ export default function Home() {
               Play against <span className="font-bold">strongest</span> chess AI
               and get detailed analysis of your games
             </p>
-            {/* <p>App Statistics</p>
-            <div className="flex flex-row justify-start space-x-4 mb-8">
-              {stats && (
-                <>
-                  <div className="text-center">
-                    <p className="text-xl font-bold  ">
-                      {stats.usersCount}{" "}
-                      <span className="font-thin text-xl   text-gray-400">
-                        Players Registered
-                      </span>
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xl font-bold  ">
-                      {stats.gamesCount}{" "}
-                      <span className="font-thin text-xl   text-gray-400">
-                        Games Played
-                      </span>
-                    </p>
-                  </div>
-                </>
-              )}
-            </div> */}
+            
             <form onClick={handleSubmit} method="POST">
               <Button
                 type="submit"

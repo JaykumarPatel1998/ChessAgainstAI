@@ -5,33 +5,35 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 
-async function fetchGames() {
-  const url = "/api/chess/updateGame";
 
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("HTTP error " + response.status);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      console.log(data.error);
-    } else {
-      return data.games;
-    }
-  } catch (error) {
-    console.log("Fetch Error: ", error);
-  }
-}
 
 function ChessGames() {
   const [games, setGames] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
+    async function fetchGames() {
+      const url = "/api/chess/updateGame";
+    
+      try {
+        const response = await fetch(url);
+    
+        if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+        }
+    
+        const data = await response.json();
+    
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          return data.games;
+        }
+      } catch (error) {
+        console.log("Fetch Error: ", error);
+      }
+    }
+    
     fetchGames().then((fetchedGames) => {
       setGames(fetchedGames);
     });
